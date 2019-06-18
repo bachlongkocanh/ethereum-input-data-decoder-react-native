@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('react-native-fs')
 const ethabi = require('ethereumjs-abi')
 const ethers = require('ethers')
 const Buffer = require('buffer/').Buffer
