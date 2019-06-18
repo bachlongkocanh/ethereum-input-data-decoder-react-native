@@ -22,6 +22,144 @@
 npm install ethereum-input-data-decoder
 ```
 
+## Install react-native-fs
+## Usage (iOS)
+
+First you need to install react-native-fs:
+
+```
+npm install react-native-fs --save
+```
+
+**Note:** If your react-native version is < 0.40 install with this tag instead:
+
+```
+npm install react-native-fs@2.0.1-rc.2 --save
+```
+
+As @a-koka pointed out, you should then update your package.json to
+`"react-native-fs": "2.0.1-rc.2"` (without the tilde)
+
+### Adding automatically with react-native link
+
+At the command line, in your project folder, type:
+
+`react-native link react-native-fs`
+
+Done! No need to worry about manually adding the library to your project.
+
+###  Adding with CocoaPods
+
+ Add the RNFS pod to your list of application pods in your Podfile, using the path from the Podfile to the installed module:~~
+
+```
+pod 'RNFS', :path => '../node_modules/react-native-fs'
+```
+
+Install pods as usual:
+```
+pod install
+```
+
+### Adding Manually in XCode
+
+In XCode, in the project navigator, right click Libraries ➜ Add Files to [your project's name] Go to node_modules ➜ react-native-fs and add the .xcodeproj file
+
+In XCode, in the project navigator, select your project. Add the `lib*.a` from the RNFS project to your project's Build Phases ➜ Link Binary With Libraries. Click the .xcodeproj file you added before in the project navigator and go the Build Settings tab. Make sure 'All' is toggled on (instead of 'Basic'). Look for Header Search Paths and make sure it contains both `$(SRCROOT)/../react-native/React` and `$(SRCROOT)/../../React` - mark both as recursive.
+
+Run your project (Cmd+R)
+
+## Usage (Android)
+
+Android support is currently limited to only the `DocumentDirectory`. This maps to the app's `files` directory.
+
+Make alterations to the following files:
+
+* `android/settings.gradle`
+
+```gradle
+...
+include ':react-native-fs'
+project(':react-native-fs').projectDir = new File(settingsDir, '../node_modules/react-native-fs/android')
+```
+
+* `android/app/build.gradle`
+
+```gradle
+...
+dependencies {
+    ...
+    compile project(':react-native-fs')
+}
+```
+
+* register module (in MainActivity.java)
+
+  * For react-native below 0.19.0 (use `cat ./node_modules/react-native/package.json | grep version`)
+
+```java
+import com.rnfs.RNFSPackage;  // <--- import
+
+public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
+
+  ......
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    mReactRootView = new ReactRootView(this);
+
+    mReactInstanceManager = ReactInstanceManager.builder()
+      .setApplication(getApplication())
+      .setBundleAssetName("index.android.bundle")
+      .setJSMainModuleName("index.android")
+      .addPackage(new MainReactPackage())
+      .addPackage(new RNFSPackage())      // <------- add package
+      .setUseDeveloperSupport(BuildConfig.DEBUG)
+      .setInitialLifecycleState(LifecycleState.RESUMED)
+      .build();
+
+    mReactRootView.startReactApplication(mReactInstanceManager, "ExampleRN", null);
+
+    setContentView(mReactRootView);
+  }
+
+  ......
+
+}
+```
+
+  * For react-native 0.19.0 and higher
+```java
+import com.rnfs.RNFSPackage; // <------- add package
+
+public class MainActivity extends ReactActivity {
+   // ...
+    @Override
+    protected List<ReactPackage> getPackages() {
+      return Arrays.<ReactPackage>asList(
+        new MainReactPackage(), // <---- add comma
+        new RNFSPackage() // <---------- add package
+      );
+    }
+```
+
+  * For react-native 0.29.0 and higher ( in MainApplication.java )
+```java
+import com.rnfs.RNFSPackage; // <------- add package
+
+public class MainApplication extends Application implements ReactApplication {
+   // ...
+    @Override
+    protected List<ReactPackage> getPackages() {
+      return Arrays.<ReactPackage>asList(
+        new MainReactPackage(), // <---- add comma
+        new RNFSPackage() // <---------- add package
+      );
+    }
+```
+follow [react-native-fs](https://github.com/itinance/react-native-fs)
+
 ## Getting started
 
 Pass [ABI](https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI) file path to decoder constructor:
