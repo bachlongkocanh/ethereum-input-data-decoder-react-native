@@ -17,7 +17,7 @@ var InputDataDecoder = function () {
     this.abi = [];
 
     if (typeof prop === 'string') {
-      this.abi = JSON.parse(fs.readFileSync(prop));
+      this.abi = JSON.parse(fs.readFile(prop));
     } else if (prop instanceof Object) {
       this.abi = prop;
     } else {
